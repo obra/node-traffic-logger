@@ -1,0 +1,41 @@
+{
+  "name": "node-traffic-logger",
+  "version": "0.1.0",
+  "description": "HTTP traffic logger and analyzer for Node.js applications",
+  "main": "src/index.cjs",
+  "bin": {
+    "node-traffic-logger": "./bin/node-traffic-logger.js",
+    "node-traffic-logger-view": "./bin/node-traffic-logger-view.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest test/unit",
+    "test:integration": "jest test/integration/axios.test.js",
+    "test:e2e": "jest test/e2e",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "http",
+    "https",
+    "logging",
+    "debugging",
+    "network",
+    "traffic",
+    "monitoring"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "axios": "^1.9.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "fetch-intercept": "^2.4.0",
+    "har-schema": "^2.0.0",
+    "har-validator": "^5.1.5"
+  }
+}
