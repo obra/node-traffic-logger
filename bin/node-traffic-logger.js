@@ -15,8 +15,8 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 // Parse command line arguments
 const args = process.argv.slice(2);
 
-// Help menu
-if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
+// If no arguments provided, show help
+if (args.length === 0) {
   console.log(`
   Node Traffic Logger v${packageJson.version}
 
@@ -29,17 +29,56 @@ if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
   Examples:
     node-traffic-logger script.js
     node-traffic-logger script.js --port 3000
+    node-traffic-logger -v script.js --arg value
   `);
   process.exit(0);
 }
 
-// Version info
-if (args.includes('-v') || args.includes('--version')) {
-  console.log(`Node Traffic Logger v${packageJson.version}`);
-  process.exit(0);
+// Process CLI options that come before the script path
+let cliArgs = [];
+let scriptIndex = 0;
+
+// Handle CLI arguments that come before the script
+while (scriptIndex < args.length) {
+  const arg = args[scriptIndex];
+  
+  // Check if this is a CLI option
+  if (arg === '-h' || arg === '--help') {
+    console.log(`
+    Node Traffic Logger v${packageJson.version}
+
+    Usage: node-traffic-logger [options] <script.js> [script-args...]
+
+    Options:
+      -h, --help      Show this help menu
+      -v, --version   Show version information
+
+    Examples:
+      node-traffic-logger script.js
+      node-traffic-logger script.js --port 3000
+      node-traffic-logger -v script.js --arg value
+    `);
+    process.exit(0);
+  } 
+  else if (arg === '-v' || arg === '--version') {
+    console.log(`Node Traffic Logger v${packageJson.version}`);
+    cliArgs.push(arg);
+    scriptIndex++;
+  }
+  // If it's not a CLI option, it's the script path
+  else {
+    break;
+  }
 }
 
-const targetScript = args[0];
+// Get the target script
+const targetScript = args[scriptIndex];
+
+// No script provided
+if (!targetScript) {
+  console.error('Error: No script specified');
+  process.exit(1);
+}
 
 // Verify target script exists
 if (!fs.existsSync(targetScript)) {
@@ -47,8 +86,8 @@ if (!fs.existsSync(targetScript)) {
   process.exit(1);
 }
 
-// Get the script parameters (everything after the script path)
-const scriptArgs = args.slice(1);
+// Get script arguments (everything after the script path)
+const scriptArgs = args.slice(scriptIndex + 1);
 
 // Resolve absolute path for the target script
 const absoluteTargetPath = path.resolve(process.cwd(), targetScript);
